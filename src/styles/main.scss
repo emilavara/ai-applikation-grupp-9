@@ -14,6 +14,10 @@ body {
     }
 }
 
+.svg-loader {
+    filter: invert(1);
+}
+
 .kajmilgpt-layout {
     display: grid;
     grid-template-rows: 64px 1fr;

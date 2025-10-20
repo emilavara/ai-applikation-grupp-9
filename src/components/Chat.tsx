@@ -6,6 +6,7 @@ import remarkGfm from 'remark-gfm'
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
 import { ArrowUpIcon, StopIcon } from "@phosphor-icons/react/dist/ssr";
+import Loader from "@/components/Loader"
 
 export default function Chat() {
     const [prompt, setPrompt] = useState("");
@@ -76,6 +77,7 @@ export default function Chat() {
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{chat.text}</ReactMarkdown>
                     </div>
                 ))}
+                {isFetching ? <Loader></Loader> : ''}
             </div>
 
             <div className="kajmilgpt-input-wrapper">
