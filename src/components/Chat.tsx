@@ -1,12 +1,19 @@
 "use client";
 
+//react stuff
 import { useState, useRef } from "react";
+
+//react markdown stuff
 import ReactMarkdown from "react-markdown";
 import remarkGfm from 'remark-gfm'
+
+//highlight.js stuff
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
-import { ArrowUpIcon, StopIcon } from "@phosphor-icons/react/dist/ssr";
+
+//components and icons
 import Loader from "@/components/Loader"
+import { ArrowUpIcon, StopIcon } from "@phosphor-icons/react/dist/ssr";
 import { GrainsIcon } from "@phosphor-icons/react/dist/ssr";
 
 export default function Chat() {
@@ -18,11 +25,15 @@ export default function Chat() {
 
     async function handleSubmit(e?: React.FormEvent, customPrompt?: string) {
         e?.preventDefault();
-    
         const inputPrompt = customPrompt ?? prompt;
+        
+        //trim whitespaces for safety
         if (!inputPrompt.trim()) return;
-    
+        
+        //render prompt chat bubble
         setChatlog(prev => [...prev, { text: inputPrompt, class: "chat-input" }]);
+        
+        //clear input
         if (promptInput.current) promptInput.current.value = "";
     
         setPrompt("");
@@ -30,6 +41,7 @@ export default function Chat() {
         setShowLoader(true);
     
         try {
+            //send prompt to gemini
             const res = await fetch("/api/gemini", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -37,26 +49,33 @@ export default function Chat() {
             });
     
             if (!res.ok || !res.body) throw new Error("No response stream from Gemini API");
-    
+            
+            //check for response stream from gemini
             const reader = res.body.getReader();
             const decoder = new TextDecoder();
     
             let fullText = "";
+            
+            //add initial chat bubble, this gets filled up as we recieve chunks from gemini
             setChatlog(prev => [...prev, { text: "", class: "chat-output" }]);
     
             let firstChunk = true;
+            
+            //render each chunk continuously
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
     
                 const chunk = decoder.decode(value, { stream: true });
                 fullText += chunk;
-    
+                
+                //remove loader when first chunk is recieved
                 if (firstChunk) {
                     setShowLoader(false);
                     firstChunk = false;
                 }
-    
+                
+                //update chatlog object
                 setChatlog(prev => {
                     const updated = [...prev];
                     const last = updated[updated.length - 1];
@@ -66,8 +85,11 @@ export default function Chat() {
                     return [...updated];
                 });
             }
-    
+            
+            //set global fetching to false
             setIsFetching(false);
+            
+            //add syntax highlighting
             setTimeout(() => hljs.highlightAll(), 100);
         } catch (err) {
             console.error("Error fetching Gemini response:", err);

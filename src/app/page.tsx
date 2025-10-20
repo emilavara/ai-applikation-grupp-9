@@ -1,8 +1,6 @@
 "use client"
 
-import Sidebar from "@/components/Sidebar"
 import Chat from "@/components/Chat"
-
 import { GrainsIcon } from "@phosphor-icons/react"
 
 export default function Home() {
