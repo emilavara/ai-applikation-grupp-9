@@ -11,9 +11,54 @@ body {
 }
 
 .kajmilgpt-layout {
+    display: grid;
+    grid-template-rows: 64px 1fr;
+    
+    header {
+        padding: 0 1rem;
+        display: flex;
+        align-items: center;
+        user-select: none;
+        justify-content: space-between;
+        
+        .logo {
+            font-size: 16px;
+            font-weight: 600;
+            display: flex;
+            gap: 0.25rem;
+            align-items: center;
+        }
+        
+        .button-container {
+            display: flex;
+            gap: 0.5rem;
+            
+            .mock-button {
+                appearance: none;
+                width: fit-content;
+                height: 32px;
+                font-family: 'Inter Display';
+                font-weight: 500;
+                background: none;
+                padding: 0 0.85rem;
+                border: none;
+                border: 1px solid #202020;
+                border-radius: 32px;
+                color: white;
+                cursor: pointer;
+                
+                &.primary {
+                    border-color: transparent;
+                    color: black;
+                    background-color: white;
+                }
+            }
+        }
+    }
+    
     .kajmilgpt-chat-wrapper {
         width: 100%;
-        height: 100vh;
+        height: calc(100vh - 64px);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -24,6 +69,30 @@ body {
             max-width: 800px;
             outline-offset: -1px;
             height: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            letter-spacing: 0.02em;
+            line-height: 1.5;
+            max-height: 100%;
+            overflow-y: scroll;
+            
+            &::-webkit-scrollbar {
+                width: 0;
+            }
+            
+            .chat-input {
+                margin-left: auto;
+                width: fit-content;
+                background-color: #101010;
+                border: 1px solid #202020;
+                padding: 0.75rem;
+                border-radius: 100rem;
+            }
+            
+            .chat-output {
+                
+            }
         }
         
         .kajmilgpt-input-wrapper {
@@ -34,11 +103,11 @@ body {
             
             .kajmilgpt-input-container {
                 width: 100%;
-                background: #050505;
+                background: #101010;
                 display: grid;
                 grid-template-columns: 1fr auto auto;
                 border-radius: 92px;
-                border: 1px solid #080808;
+                border: 1px solid #202020;
                 align-items: center;
                 padding: 0 1rem;
                 gap: 0.5rem;
@@ -67,6 +136,10 @@ body {
                     width: 32px;
                     border: none;
                     background-color: orange;
+                    display: grid;
+                    place-items: center;
+                    padding: 0;
+                    cursor: pointer;
                 }
                 
                 .model-button {
@@ -78,9 +151,13 @@ body {
                     background: none;
                     padding: 0 0.75rem;
                     border: none;
-                    border: 1px solid #151515;
+                    border: 1px solid #202020;
                     border-radius: 32px;
                     color: white;
+                    
+                    @media (max-width: 768px) {
+                        display: none;
+                    }
                 }
             }
         }

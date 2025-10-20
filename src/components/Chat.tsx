@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, FormEvent } from "react"
+import { ArrowUpIcon } from "@phosphor-icons/react/dist/ssr";
 
 export default function Chat() {
     const [prompt, setPrompt] = useState("");
@@ -17,7 +18,9 @@ export default function Chat() {
                 <div className="kajmilgpt-input-container">
                     <input type="text" placeholder="Vad kan KajmilGPT hjälpa till med idag?"/>
                     <button className="model-button">gemini-2.5-flash</button>
-                    <button className="submit-button"> </button>
+                    <button className="submit-button">
+                        <ArrowUpIcon size={18} weight={"bold"} color={"white"}/>
+                    </button>
                 </div>
             </div>
         </div>
