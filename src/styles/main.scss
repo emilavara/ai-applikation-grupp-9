@@ -101,7 +101,7 @@ body {
                 color: #e3e3e3;
                 
                 * {
-                    animation: slideIn 0.5s ease;
+                    animation: slideInSubtle 0.5s ease;
                     line-height: 1.75;
                 }
             }
@@ -114,6 +114,10 @@ body {
             max-width: 800px;
             position: absolute;
             bottom: 0;
+            backdrop-filter: blur(3px);
+            border-top-left-radius: 32px;
+            border-top-right-radius: 32px;
+            overflow: hidden;
             
             .kajmilgpt-input-container {
                 width: 100%;

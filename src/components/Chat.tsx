@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from 'remark-gfm'
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-dark.css";
 import { ArrowUpIcon, StopIcon } from "@phosphor-icons/react/dist/ssr";
@@ -72,7 +73,7 @@ export default function Chat() {
             <div className="kajmilgpt-chat-container">
                 {chatlog.map((chat, i) => (
                     <div key={i} className={chat.class}>
-                        <ReactMarkdown>{chat.text}</ReactMarkdown>
+                        <ReactMarkdown remarkPlugins={[remarkGfm]}>{chat.text}</ReactMarkdown>
                     </div>
                 ))}
             </div>
