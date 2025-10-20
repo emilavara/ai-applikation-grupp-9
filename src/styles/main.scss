@@ -1,3 +1,6 @@
+@use "./typography.scss" as *;
+@use "./animations.scss" as *;
+
 body {
     background-color: #020202;
     margin: 0;
@@ -88,10 +91,11 @@ body {
                 border: 1px solid #202020;
                 padding: 0.75rem;
                 border-radius: 100rem;
+                animation: slideIn 0.5s ease;
             }
             
             .chat-output {
-                
+                animation: slideIn 0.5s ease;
             }
         }
         

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, FormEvent } from "react"
+import ReactMarkdown from "react-markdown";
 import { ArrowUpIcon } from "@phosphor-icons/react/dist/ssr";
 
 import hljs from 'highlight.js';
@@ -64,7 +65,9 @@ export default function Chat() {
             <div className="kajmilgpt-chat-container">
                 {chatlog.map(chat => (
 					<div key={chat.text} className={chat.class}>
-					    {chat.text}
+					    <ReactMarkdown>
+					        {chat.text}
+						</ReactMarkdown>
 					</div>
 				))}
             </div>
