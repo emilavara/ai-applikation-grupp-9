@@ -1,85 +1,98 @@
-"use client"
+"use client";
 
-import { useState, useRef, FormEvent } from "react"
+import { useState, useRef } from "react";
 import ReactMarkdown from "react-markdown";
-import { ArrowUpIcon } from "@phosphor-icons/react/dist/ssr";
-
-import hljs from 'highlight.js';
-import 'highlight.js/styles/atom-one-dark.css';
+import hljs from "highlight.js";
+import "highlight.js/styles/atom-one-dark.css";
+import { ArrowUpIcon, StopIcon } from "@phosphor-icons/react/dist/ssr";
 
 export default function Chat() {
     const [prompt, setPrompt] = useState("");
-	const [isFetching, setIsFetching] = useState(false)
-	const [chatlog, setChatlog] = useState<{ text: string; class: string }[]>([])
-	const promptInput = useRef<HTMLInputElement>(null);
-	
-	async function handleSubmit(event: React.FormEvent) {
-        event.preventDefault();
-        setIsFetching(true)
-        
-        let promptToAdd = {
-            text: prompt,
-            class: 'chat-input'
-        }
-        
-        setChatlog(prevChatlog => [...prevChatlog, promptToAdd])
-        
-        //reset input field
-        if (promptInput.current) {
-            promptInput.current.value = "";
-        }
-        
+    const [isFetching, setIsFetching] = useState(false);
+    const [chatlog, setChatlog] = useState<{ text: string; class: string }[]>([]);
+    const promptInput = useRef<HTMLInputElement>(null);
+
+    async function handleSubmit(e: React.FormEvent) {
+        e.preventDefault();
+        if (!prompt.trim()) return;
+
+        setChatlog(prev => [...prev, { text: prompt, class: "chat-input" }]);
+        const currentPrompt = prompt;
+        setPrompt("");
+        if (promptInput.current) promptInput.current.value = "";
+
+        setIsFetching(true);
+
         try {
             const res = await fetch("/api/gemini", {
-               	method: "POST",
-               	headers: { "Content-Type": "application/json" },
-               	body: JSON.stringify({ prompt }),
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ prompt: currentPrompt }),
             });
-            
-            if (!res.ok) {
-               	throw new Error('Failed to submit the data. Please try again.')
-            } else {
-                const data = await res.json()
-                
-                let responseToAdd = {
-                   	text: data.response,
-                   	class: 'chat-output',
-                   	markdown: data.response
-                }
-                
-                setChatlog(prevChatlog => [...prevChatlog, responseToAdd])
-                setIsFetching(false)
-                
-                setTimeout(() => {
-                   	hljs.initHighlighting();
-                }, 1)
+
+            if (!res.ok || !res.body) {
+                throw new Error("No response stream from Gemini API");
             }
-            
-        } catch (error) {
-            console.error(error)
+
+            const reader = res.body.getReader();
+            const decoder = new TextDecoder();
+
+            let fullText = "";
+            setChatlog(prev => [...prev, { text: "", class: "chat-output" }]);
+
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                const chunk = decoder.decode(value, { stream: true });
+                fullText += chunk;
+
+                setChatlog(prev => {
+                    const updated = [...prev];
+                    const last = updated[updated.length - 1];
+                    if (last && last.class === "chat-output") {
+                        last.text = fullText;
+                    }
+                    return [...updated];
+                });
+                
+            }
+
+            setIsFetching(false);
+
+            // highlight code blocks once response is done
+            setTimeout(() => hljs.highlightAll(), 100);
+        } catch (err) {
+            console.error("Error fetching Gemini response:", err);
+            setIsFetching(false);
         }
     }
-    
+
     return (
         <div className="kajmilgpt-chat-wrapper">
             <div className="kajmilgpt-chat-container">
-                {chatlog.map(chat => (
-					<div key={chat.text} className={chat.class}>
-					    <ReactMarkdown>
-					        {chat.text}
-						</ReactMarkdown>
-					</div>
-				))}
+                {chatlog.map((chat, i) => (
+                    <div key={i} className={chat.class}>
+                        <ReactMarkdown>{chat.text}</ReactMarkdown>
+                    </div>
+                ))}
             </div>
+
             <div className="kajmilgpt-input-wrapper">
                 <form onSubmit={handleSubmit} className="kajmilgpt-input-container">
-                    <input onChange={(e) => setPrompt(e.target.value)} ref={promptInput} type="text" placeholder="Vad kan KajmilGPT hjälpa till med idag?"/>
-                    <button className="model-button">gemini-2.5-flash</button>
+                    <input
+                        onChange={(e) => setPrompt(e.target.value)}
+                        ref={promptInput}
+                        type="text"
+                        placeholder="Vad kan KajmilGPT hjälpa till med idag?"
+                    />  
+                    <button className="model-button" type="button">
+                        gemini-2.5-flash
+                    </button>
                     <button type="submit" className="submit-button">
-                        <ArrowUpIcon size={18} weight={"bold"} color={"white"}/>
+                        {isFetching ? <StopIcon size={18} weight={"fill"} color={"white"}/> : <ArrowUpIcon size={18} weight={"bold"} color={"white"} />}
                     </button>
                 </form>
             </div>
         </div>
-    )
+    );
 }

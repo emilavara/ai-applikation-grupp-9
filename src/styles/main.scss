@@ -1,5 +1,6 @@
 @use "./typography.scss" as *;
 @use "./animations.scss" as *;
+@use "./hljs.scss" as *;
 
 body {
     background-color: #020202;
@@ -79,6 +80,7 @@ body {
             line-height: 1.5;
             max-height: 100%;
             overflow-y: scroll;
+            padding-bottom: 192px;
             
             &::-webkit-scrollbar {
                 width: 0;
@@ -89,13 +91,19 @@ body {
                 width: fit-content;
                 background-color: #101010;
                 border: 1px solid #202020;
-                padding: 0.75rem;
+                padding: 0.5rem 0.85rem;
                 border-radius: 100rem;
                 animation: slideIn 0.5s ease;
             }
             
             .chat-output {
                 animation: slideIn 0.5s ease;
+                color: #e3e3e3;
+                
+                * {
+                    animation: slideIn 0.5s ease;
+                    line-height: 1.75;
+                }
             }
         }
         
@@ -104,6 +112,8 @@ body {
             outline-offset: -1px;
             width: 100%;
             max-width: 800px;
+            position: absolute;
+            bottom: 0;
             
             .kajmilgpt-input-container {
                 width: 100%;
