@@ -74,7 +74,8 @@ body {
         
         .kajmilgpt-chat-container {
             width: 100%;
-            max-width: 800px;
+            padding-left: calc(50vw - 800px/2);
+            padding-right: calc(50vw - 800px/2);
             outline-offset: -1px;
             height: 100%;
             display: flex;

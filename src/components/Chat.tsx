@@ -11,6 +11,7 @@ import Loader from "@/components/Loader"
 export default function Chat() {
     const [prompt, setPrompt] = useState("");
     const [isFetching, setIsFetching] = useState(false);
+    const [showLoader, setShowLoader] = useState(false);
     const [chatlog, setChatlog] = useState<{ text: string; class: string }[]>([]);
     const promptInput = useRef<HTMLInputElement>(null);
 
@@ -24,6 +25,7 @@ export default function Chat() {
         if (promptInput.current) promptInput.current.value = "";
 
         setIsFetching(true);
+        setShowLoader(true)
 
         try {
             const res = await fetch("/api/gemini", {
@@ -41,12 +43,19 @@ export default function Chat() {
 
             let fullText = "";
             setChatlog(prev => [...prev, { text: "", class: "chat-output" }]);
+            
+            let firstChunk = true;
 
             while (true) {
                 const { done, value } = await reader.read();
                 if (done) break;
                 const chunk = decoder.decode(value, { stream: true });
                 fullText += chunk;
+                
+                if (firstChunk) {
+                    setShowLoader(false);
+                    firstChunk = false;
+                }
 
                 setChatlog(prev => {
                     const updated = [...prev];
@@ -77,7 +86,7 @@ export default function Chat() {
                         <ReactMarkdown remarkPlugins={[remarkGfm]}>{chat.text}</ReactMarkdown>
                     </div>
                 ))}
-                {isFetching ? <Loader></Loader> : ''}
+                {showLoader ? <Loader></Loader> : ''}
             </div>
 
             <div className="kajmilgpt-input-wrapper">
