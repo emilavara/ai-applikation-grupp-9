@@ -1,3 +1,16 @@
+pre {
+    code {
+        padding: 1em;
+        display: block;
+        overflow-x: scroll !important;
+        max-width: 800px;
+        
+        &::-webkit-scrollbar {
+            display: none;
+        }
+    }
+}
+
 code {
     background-color: #101010 !important;
     border-radius: 0.5rem;

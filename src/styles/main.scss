@@ -85,7 +85,13 @@ body {
             line-height: 1.5;
             max-height: 100%;
             overflow-y: scroll;
+            padding-top: 32px;
             padding-bottom: 192px;
+            
+            &.welcome-screen {
+                align-items: center;
+                justify-content: center;
+            }
             
             &::-webkit-scrollbar {
                 width: 0;
@@ -110,10 +116,28 @@ body {
                     line-height: 1.75;
                 }
             }
+            
+            .welcome-screen {
+                text-align: center;
+                
+                h1 {
+                    display: flex;
+                    align-items: center;
+                    
+                    svg {
+                        margin-left: 0.5rem;
+                        margin-right: 0.25rem;
+                    }
+                }
+                
+                p {
+                    opacity: 0.5;
+                }
+            }
         }
         
         .kajmilgpt-input-wrapper {
-            height: 92px;
+            height: 84px;
             outline-offset: -1px;
             width: 100%;
             max-width: 800px;
@@ -123,6 +147,7 @@ body {
             border-top-left-radius: 32px;
             border-top-right-radius: 32px;
             overflow: hidden;
+            transition: height 0.33s ease;
             
             .kajmilgpt-input-container {
                 width: 100%;
@@ -181,6 +206,43 @@ body {
                     @media (max-width: 768px) {
                         display: none;
                     }
+                }
+            }
+            
+            .question-button {
+                margin-top: 0.5rem;
+                appearance: none;
+                width: fit-content;
+                font-family: 'Inter Display';
+                font-weight: 500;
+                padding: 0.40rem 0.65rem;
+                border: none;
+                border: 1px solid #202020;
+                border-radius: 32px;
+                color: #d9d9d9;
+                background-color: #101010;
+                cursor: pointer;
+                margin-right: 0.35rem;
+                font-size: 12px;
+                display: none;
+                transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease;
+                
+                &:hover {
+                    background-color: white;
+                    border-color: transparent;
+                    color: black;
+                }
+                
+                @media (max-width: 768px) {
+                    display: none;
+                }
+            }
+            
+            &.has-question-buttons {
+                height: 108px;
+                
+                .question-button {
+                    display: inline-block;
                 }
             }
         }
